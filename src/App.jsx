@@ -1,44 +1,25 @@
-import { useState } from 'react'
-import logo from './logo.svg'
+import { useState } from 'react';
 import './App.css'
+import { WeatherContext } from "./context/WeatherContext.js";
+import Searchbox from "./components/Searchbox.jsx";
+import WeatherResults from "./components/WeatherResults.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [searchInput, setSearchInput] = useState(null);
+  const [weatherVisible, setWeatherVisible] = useState(false);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
+    <WeatherContext.Provider value={{
+      searchInput,
+      setSearchInput,
+      weatherVisible,
+      setWeatherVisible,
+    }}>
+      <div>
+        <Searchbox />
+      </div>
+      {weatherVisible && <WeatherResults />}
+    </WeatherContext.Provider>
   )
 }
 
