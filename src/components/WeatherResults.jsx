@@ -1,42 +1,76 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { WeatherContext } from "../context/WeatherContext.js";
+import WeatherForecast from "./WeatherForecast.jsx";
 
 function WeatherResults() {
-  const { searchInput } = useContext(WeatherContext);
+  const [preFetch, setPreFetch] = useState(true);
+  const { 
+    searchInput,
+    searchType,
+    apiRoutes,
+    setResults,
+    results
+  } = useContext(WeatherContext);
+
   const {
-    data: results,
+    data,
     isLoading,
     isError,
     error,
     isSuccess
-  } = useQuery(searchInput, fetchWeather);
-  // console.log(results);
+  } = useQuery(searchInput + '_' + searchType, fetchWeather);
 
   function fetchWeather() {
-    console.log("http://127.0.0.1:8000/api/weather/" + searchInput)
-    return fetch("http://127.0.0.1:8000/api/weather/" + searchInput).then(response => response.json());
+    console.log(apiRoutes[searchType] + searchInput)
+    return fetch(apiRoutes[searchType] + searchInput).then(response => response.json());
   }
+
+  useEffect(() => {
+    if (isSuccess) {
+      setPreFetch(false);
+      setResults(data);
+    }
+  }, [data]);
 
   return (
     <div>
       <div className="grid place-items-center mt-2 mb-2">
-        { isLoading && (
+        { preFetch && (
+          <>
+            <h3 className="mt-4">Fetching...</h3>
+            <progress className="progress w-56 mt-2"></progress>
+          </>
+        )}
+        { isLoading && !preFetch && (
           <>
             <h3 className="mt-4">Loading...</h3>
             <progress className="progress w-56 mt-2"></progress>
           </>
         )}
-        { isError && (
+        { isError && !preFetch && (
           <div>{error.message}</div>
         )}
-        { isSuccess && (
-          <>
+        { isSuccess && !preFetch && (
+          <div className="grid">
+            <div className="grid grid-cols-3 grid-rows-1">
+              <div className="col-span-1 justify-left">
+                <div className="text-3xl mt-2">{results.currentConditions.temp}°C</div>
+                <div className="text-xs">Feels like: {results.currentConditions.feelslike}°C</div>
+              </div>
+              <div className="col-span-2 text-xs mt-3">
+                <div>{results.currentConditions.conditions}</div>
+                <div>Precipitation: {results.currentConditions.precip}%</div>
+                <div>Wind speed: {results.currentConditions.windspeed}mph</div>
+              </div>
+            </div>
             <div className="mt-4">{results.resolvedAddress}</div>
             <div className="">{results.currentConditions.datetime} ({results.timezone})</div>
-            <div className="text-lg">{results.currentConditions.temp}</div>
             <div className="mt-4">{results.description}</div>
-          </>
+            { isSuccess && (
+              <WeatherForecast />
+            )}
+          </div>
         )}
       </div>
     </div>
