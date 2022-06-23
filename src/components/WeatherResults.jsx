@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { WeatherContext } from "../context/WeatherContext.js";
 import WeatherForecast from "./WeatherForecast.jsx";
+import CountUp from 'react-countup';
 
 function WeatherResults() {
   const [preFetch, setPreFetch] = useState(true);
@@ -56,10 +57,21 @@ function WeatherResults() {
             <div className="grid">
               <div className="grid grid-cols-3 grid-rows-1">
                 <div className="col-span-1 justify-left">
-                  <div className="text-3xl mt-2">{results.currentConditions.temp}°C</div>
+                  <CountUp 
+                    end={results.currentConditions.temp} 
+                    decimals={1}
+                    decimal="."
+                    duration={0.4}
+                    suffix="°C"
+                    delay={0}
+                  >
+                    {({ countUpRef }) => (
+                      <div className="text-3xl mt-2" ref={countUpRef}></div>
+                    )}
+                  </CountUp>
                   <div className="text-xs">Feels like: {results.currentConditions.feelslike}°C</div>
                 </div>
-                <div className="col-span-2 text-xs mt-3">
+                <div className="col-span-2 text-xs mt-3 ml-2">
                   <div>{results.currentConditions.conditions}</div>
                   <div>Precipitation: {results.currentConditions.precip}%</div>
                   <div>Wind speed: {results.currentConditions.windspeed}mph</div>
