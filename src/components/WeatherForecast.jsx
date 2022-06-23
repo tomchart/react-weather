@@ -13,6 +13,7 @@ function WeatherForecast () {
       console.log(days);
       // filter only hours in the future that are divisible by 3 (for fewer points on graph)
       // datetimes are a string so doing some ropey substringing but we move
+      // TODO something here is broken with the forecast method
       days.hours.filter(hour => hour.datetimeEpoch > results.currentConditions.datetimeEpoch && hour.datetime.substring(0, 2) % 3 === 0).map(hour => {
         futureHourObjects.push(hour);
       })
