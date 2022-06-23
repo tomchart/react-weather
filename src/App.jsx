@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './App.css'
 import { WeatherContext } from "./context/WeatherContext.js";
 import Searchbox from "./components/Searchbox.jsx";
@@ -28,9 +28,11 @@ function App() {
       setResults,
     }}>
       <div>
-        <Searchbox />
+        <div className="mt-8">
+          <Searchbox />
+        </div>
+        {weatherVisible && <WeatherResults />}
       </div>
-      {weatherVisible && <WeatherResults />}
     </WeatherContext.Provider>
   )
 }
