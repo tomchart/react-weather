@@ -52,25 +52,25 @@ function WeatherResults() {
           <div>{error.message}</div>
         )}
         { isSuccess && !preFetch && (
-          <div className="grid">
-            <div className="grid grid-cols-3 grid-rows-1">
-              <div className="col-span-1 justify-left">
-                <div className="text-3xl mt-2">{results.currentConditions.temp}°C</div>
-                <div className="text-xs">Feels like: {results.currentConditions.feelslike}°C</div>
+          <>
+            <div className="grid">
+              <div className="grid grid-cols-3 grid-rows-1">
+                <div className="col-span-1 justify-left">
+                  <div className="text-3xl mt-2">{results.currentConditions.temp}°C</div>
+                  <div className="text-xs">Feels like: {results.currentConditions.feelslike}°C</div>
+                </div>
+                <div className="col-span-2 text-xs mt-3">
+                  <div>{results.currentConditions.conditions}</div>
+                  <div>Precipitation: {results.currentConditions.precip}%</div>
+                  <div>Wind speed: {results.currentConditions.windspeed}mph</div>
+                </div>
               </div>
-              <div className="col-span-2 text-xs mt-3">
-                <div>{results.currentConditions.conditions}</div>
-                <div>Precipitation: {results.currentConditions.precip}%</div>
-                <div>Wind speed: {results.currentConditions.windspeed}mph</div>
-              </div>
+              <div className="mt-4">{results.resolvedAddress}</div>
+              <div className="">{results.currentConditions.datetime} ({results.timezone})</div>
+              <div className="mt-4">{results.description}</div>
             </div>
-            <div className="mt-4">{results.resolvedAddress}</div>
-            <div className="">{results.currentConditions.datetime} ({results.timezone})</div>
-            <div className="mt-4">{results.description}</div>
-            { isSuccess && (
-              <WeatherForecast />
-            )}
-          </div>
+            <WeatherForecast />
+          </>
         )}
       </div>
     </div>
