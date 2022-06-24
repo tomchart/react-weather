@@ -3,7 +3,7 @@ import { WeatherContext } from "../context/WeatherContext.js";
 import ReactECharts from 'echarts-for-react'; 
 import { differenceInDays, differenceInHours } from 'date-fns';
 
-function WeatherForecast () {
+function WeatherChart () {
   const { 
     results,
   } = useContext(WeatherContext);
@@ -119,4 +119,4 @@ function WeatherForecast () {
   )
 }
 
-export default WeatherForecast
+export default WeatherChart
