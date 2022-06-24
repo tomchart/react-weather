@@ -11,7 +11,7 @@ function WeatherResults() {
     searchType,
     apiRoutes,
     setResults,
-    results
+    results,
   } = useContext(WeatherContext);
 
   const {
@@ -27,10 +27,14 @@ function WeatherResults() {
     return fetch(apiRoutes[searchType] + searchInput).then(response => response.json());
   }
 
+  function setDataFetchState() {
+    setPreFetch(false);
+    setResults(data);
+  };
+
   useEffect(() => {
     if (isSuccess) {
-      setPreFetch(false);
-      setResults(data);
+      setDataFetchState();
     }
   }, [data]);
 
@@ -81,7 +85,9 @@ function WeatherResults() {
               <div className="">{results.currentConditions.datetime} ({results.timezone})</div>
               <div className="mt-4">{results.description}</div>
             </div>
-            <WeatherChart />
+            { isSuccess && (
+              <WeatherChart />
+            )}
           </>
         )}
       </div>
