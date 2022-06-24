@@ -1,23 +1,41 @@
 import { useContext, useMemo } from "react";
 import { WeatherContext } from "../context/WeatherContext.js";
 import ReactECharts from 'echarts-for-react'; 
+import { differenceInDays, differenceInHours } from 'date-fns';
 
 function WeatherForecast () {
   const { 
     results,
   } = useContext(WeatherContext);
 
+  function filterFutureHours(dayObject) {
+    var currentDateTime = new Date(results.days[0].datetime + ' ' + results.currentConditions.datetime);
+    var dayObjectDate = new Date(dayObject.datetime);
+    var dayDifference = differenceInDays(currentDateTime, dayObjectDate);
+
+    var futureHours = [];
+    if (dayDifference <= 1 && dayDifference >= 0) {
+      dayObject.hours.map(hourObject => {
+        var hourObjectDatetime = new Date(dayObject.datetime + ' ' + hourObject.datetime);
+        var hourDifference = differenceInHours(currentDateTime, hourObjectDatetime);
+        
+        // if less than a day in the future and hour like HH % 3 = 0 then store for display to user
+        if (hourDifference <= 24 && hourObject.datetime.substring(0, 2) % 3 === 0) {
+          futureHours.push(hourObject);
+        };
+      });
+    };
+    return futureHours;
+  }
+
   function stripFutureHourObjects() {
-    var futureHourObjects = [];
-    results.days.map(days => {
-      console.log(days);
-      // filter only hours in the future that are divisible by 3 (for fewer points on graph)
-      // datetimes are a string so doing some ropey substringing but we move
-      // TODO something here is broken with the forecast method
-      days.hours.filter(hour => hour.datetimeEpoch > results.currentConditions.datetimeEpoch && hour.datetime.substring(0, 2) % 3 === 0).map(hour => {
-        futureHourObjects.push(hour);
-      })
-    })
+    var futureHourObjectArrays = [];
+    results.days.map(day => {
+      // pass all dayObjects received to filterFutureHours
+      futureHourObjectArrays.push(filterFutureHours(day));
+    });
+    // flatten array of objects returned by filterFutureHours
+    var futureHourObjects = [].concat(...futureHourObjectArrays);
     return futureHourObjects;
   }
 
