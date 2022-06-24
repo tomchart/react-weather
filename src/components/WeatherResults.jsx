@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { WeatherContext } from "../context/WeatherContext.js";
-import WeatherForecast from "./WeatherForecast.jsx";
+import WeatherChart from "./WeatherChart.jsx";
 import CountUp from 'react-countup';
 
 function WeatherResults() {
@@ -81,7 +81,7 @@ function WeatherResults() {
               <div className="">{results.currentConditions.datetime} ({results.timezone})</div>
               <div className="mt-4">{results.description}</div>
             </div>
-            <WeatherForecast />
+            <WeatherChart />
           </>
         )}
       </div>
