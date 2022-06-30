@@ -3,6 +3,8 @@ import './App.css'
 import { WeatherContext } from "./context/WeatherContext.js";
 import Searchbox from "./components/Searchbox.jsx";
 import WeatherResults from "./components/WeatherResults.jsx";
+import Login from "./components/Login.jsx";
+import Navbar from "./components/Navbar.jsx";
 import { differenceInDays, differenceInHours, parseISO } from 'date-fns';
 
 function App() {
@@ -10,7 +12,8 @@ function App() {
   const [searchType, setSearchType] = useState(null);
   const [weatherVisible, setWeatherVisible] = useState(false);
   const [results, setResults] = useState(null);
-  const apiUri = 'http://127.0.0.1:8000/api';
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const apiUri = 'http://localhost:8000/api';
   const apiRoutes = {
     'today': apiUri + '/weather/today/',
     'forecast': apiUri + '/weather/forecast/',
@@ -111,10 +114,15 @@ function App() {
       futureHours,
       futureHourDatetimes,
       futureHourTemps,
+      isLoggedIn,
+      setIsLoggedIn
     }}>
       <div>
-        <div className="mt-8">
+        <Navbar />
+        <div className="mt-4">
           <Searchbox />
+          <div className="grid place-items-center mt-4">
+          </div>
         </div>
         {weatherVisible && <WeatherResults />}
       </div>
