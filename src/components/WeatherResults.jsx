@@ -4,6 +4,7 @@ import { WeatherContext } from "../context/WeatherContext.js";
 import WeatherChart from "./WeatherChart.jsx";
 import WeatherForecastCards from "./WeatherForecastCards.jsx";
 import CountUp from 'react-countup';
+import api from "../services/Api.jsx";
 
 function WeatherResults() {
   const [preFetch, setPreFetch] = useState(true);
@@ -15,26 +16,53 @@ function WeatherResults() {
     results,
   } = useContext(WeatherContext);
 
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-    isSuccess
-  } = useQuery(searchInput + '_' + searchType, fetchWeather);
+  // const {
+  //   data,
+  //   isLoading,
+  //   isError,
+  //   error,
+  //   isSuccess
+  // } = useQuery(searchInput + '_' + searchType, api.get(apiRoutes[searchType] + searchInput));
 
-  function fetchWeather() {
-    console.log(apiRoutes[searchType] + searchInput)
-    return fetch(apiRoutes[searchType] + searchInput).then(response => response.json());
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
+  const [error, setError] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(null);
+
+  function fetch(){
+    setIsLoading(true);
+    let promise = api.get(apiRoutes[searchType] + searchInput)
+    promise.then(response => {
+      console.log('response: ')
+      console.log(response)
+      setData(response);
+    })
   }
+
+  // function fetchWeather() {
+  //   console.log(apiRoutes[searchType] + searchInput)
+  //   return api.get(apiRoutes[searchType] + searchInput);
+  // }
 
   function setDataFetchState() {
     setPreFetch(false);
-    setResults(data);
+    setIsLoading(false);
+    setResults(data.data);
+    setIsSuccess(true);
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (preFetch) {
+      console.log('fetching');
+      fetch();
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('data changed: ' + data);
+    if (preFetch && data) {
+      console.log('success, set fetch state')
       setDataFetchState();
     }
   }, [data]);

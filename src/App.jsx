@@ -13,10 +13,9 @@ function App() {
   const [weatherVisible, setWeatherVisible] = useState(false);
   const [results, setResults] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const apiUri = 'http://localhost:8000/api';
   const apiRoutes = {
-    'today': apiUri + '/weather/today/',
-    'forecast': apiUri + '/weather/forecast/',
+    'today': '/api/weather/today/',
+    'forecast': '/api/weather/forecast/',
   };
   const [currentDateTime, setCurrentDateTime] = useState(null);
   const [futureHours, setfutureHours] = useState([]);
@@ -115,7 +114,7 @@ function App() {
       futureHourDatetimes,
       futureHourTemps,
       isLoggedIn,
-      setIsLoggedIn
+      setIsLoggedIn,
     }}>
       <div>
         <Navbar />
