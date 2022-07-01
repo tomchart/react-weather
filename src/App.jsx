@@ -3,8 +3,8 @@ import './App.css'
 import { WeatherContext } from "./context/WeatherContext.js";
 import Searchbox from "./components/Searchbox.jsx";
 import WeatherResults from "./components/WeatherResults.jsx";
-import Login from "./components/Login.jsx";
 import Navbar from "./components/Navbar.jsx";
+import { ProvideAuth } from "./hooks/useAuth.jsx";
 import { differenceInDays, differenceInHours, parseISO } from 'date-fns';
 
 function App() {
@@ -83,7 +83,6 @@ function App() {
     })
     setfutureHourTemps(hourTemps);
   }
-  
 
   useEffect(() => {
     formatCurrentDateTime();
@@ -116,15 +115,17 @@ function App() {
       isLoggedIn,
       setIsLoggedIn,
     }}>
-      <div>
-        <Navbar />
-        <div className="mt-4">
-          <Searchbox />
-          <div className="grid place-items-center mt-4">
+      <ProvideAuth>
+        <div>
+          <Navbar />
+          <div className="mt-4">
+            <Searchbox />
+            <div className="grid place-items-center mt-4">
+            </div>
           </div>
+          {weatherVisible && <WeatherResults />}
         </div>
-        {weatherVisible && <WeatherResults />}
-      </div>
+      </ProvideAuth>
     </WeatherContext.Provider>
   )
 }
