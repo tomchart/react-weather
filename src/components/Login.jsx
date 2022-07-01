@@ -1,38 +1,22 @@
-import { useState, useEffect, useContext } from "react";
-import { WeatherContext } from "../context/WeatherContext.js";
-import api from "../services/Api.jsx";
+import { useState, useEffect } from "react";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 function Login() {
 
   // logs out on refresh
   // hmmm
 
-  const {
-    setIsLoggedIn
-  } = useContext(WeatherContext);
+  const auth = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  async function requestLogin() {
+  function requestLogin() {
     if (isLoading) {
-      let info = { email: email, password: password};
-      api.post('/api/login', info)
-        .then(response => {
-          if (response.status === 200) {
-            setIsLoading(false);
-            setIsLoggedIn(true);
-            console.log('logged in');
-            setEmail('');
-            setPassword('');
-          } else {
-            setIsLoading(false);
-            console.log('error logging in');
-            setPassword('');
-          }
-      })
-    }
+      auth.login(email, password);
+      setIsLoading(false);
+      }
   }
 
   function handleInput(event) {
@@ -85,6 +69,11 @@ function Login() {
               placeholder="password" 
               className="mt-4 input input-bordered w-full max-w-xs" 
             />
+            { auth.error && (
+              <div className="grid place-items-center text-xs mt-2">
+                <p>Authentication error</p>
+              </div>
+            )}
             <button 
               className="grid justify-center btn btn-primary mt-3"
               onClick={event => {

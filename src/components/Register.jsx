@@ -1,12 +1,9 @@
-import { useState, useEffect, useContext } from "react";
-import { WeatherContext } from "../context/WeatherContext.js";
-import api from "../services/Api.jsx";
+import { useState, useEffect } from "react";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 function Register() {
 
-  const {
-    setIsLoggedIn
-  } = useContext(WeatherContext);
+  const auth = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState('');
@@ -15,23 +12,11 @@ function Register() {
 
   async function requestRegister() {
     if (isLoading) {
-      console.log('csrf-cookie');
-      let response = api.post('/api/register', {
-            name: name,
-            email: email,
-            password: password,
-          });
-      if (response.status === 201) {
-        setIsLoading(false);
-        setIsLoggedIn(true);
-        console.log('logged in');
-        setEmail('');
-        setPassword('');
-      } else {
-        setIsLoading(false);
-        console.log('error logging in');
-        setPassword('');
-      }
+      auth.register(name, email, password);
+      setIsLoading(false);
+      setName('');
+      setEmail('');
+      setPassword('');
     }
   }
 
@@ -99,6 +84,11 @@ function Register() {
               placeholder="password" 
               className="mt-4 input input-bordered w-full max-w-xs" 
             />
+            { auth.error && (
+              <div className="grid place-items-center text-xs mt-2">
+                <p>Registration error</p>
+              </div>
+            )}
             <button 
               className="grid justify-center btn btn-primary mt-3"
               onClick={event => {
