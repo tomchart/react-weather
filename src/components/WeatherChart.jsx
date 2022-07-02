@@ -2,6 +2,8 @@ import { useContext } from "react";
 import { WeatherContext } from "../context/WeatherContext.js";
 import ReactECharts from 'echarts-for-react'; 
 
+// forecast only showing next days in week numerically
+// ie, on friday you only get saturday (week numerals start on sunday)
 function WeatherChart () {
   const { 
     futureHourDatetimes,
