@@ -63,23 +63,6 @@ function useProvideAuth() {
         setUser(false);
       });
   };
-  
-  // Subscribe to user on mount
-  // Because this sets state in the callback it will cause any ...
-  // ... component that utilizes this hook to re-render with the ...
-  // ... latest auth object.
-  useEffect(() => {
-    if (user) {
-      setUser(user);
-    } else {
-      setUser(false);
-    };
-    if (error) {
-      setError(error);
-    } else {
-      setError(false);
-    };
-  }, []);
 
   // Return the user object and auth methods
   return {
