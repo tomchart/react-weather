@@ -14,7 +14,7 @@ function Login(props) {
   const [password, setPassword] = useState('');
 
   function closeModal() {
-    props.setModalOpen(false);
+    props.setLoginOpen(false);
   }
 
   function requestLogin() {
@@ -22,6 +22,9 @@ function Login(props) {
     if (isLoading) {
       console.log('auth.login')
       auth.login(email, password);
+      setIsLoading(false);
+      setEmail('');
+      setPassword('');
       }
   }
 
