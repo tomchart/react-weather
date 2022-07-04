@@ -1,10 +1,12 @@
 import Login from "./Login.jsx";
 import Register from "./Register.jsx";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { useState } from "react";
 
 function Navbar() {
 
   const auth = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
 
   function handleLogout() {
     auth.logout();
@@ -30,14 +32,16 @@ function Navbar() {
             )}
             { !auth.user && (
               <>
-                <li><label htmlFor="modal-login">login</label></li>
+                <li><button onClick={() => setModalOpen(true)}>login</button></li>
                 <li><label htmlFor="modal-register">register</label></li>
               </>
             )}
           </ul>
         </div>
       </div>
-      <Login />
+      { modalOpen && (
+        <Login setModalOpen={setModalOpen} />
+      )}
       <Register />
     </div>
   )
