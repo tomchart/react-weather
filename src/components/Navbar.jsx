@@ -6,7 +6,8 @@ import { useState } from "react";
 function Navbar() {
 
   const auth = useAuth();
-  const [modalOpen, setModalOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [registerOpen, setRegisterOpen] = useState(false);
 
   function handleLogout() {
     auth.logout();
@@ -32,17 +33,19 @@ function Navbar() {
             )}
             { !auth.user && (
               <>
-                <li><button onClick={() => setModalOpen(true)}>login</button></li>
-                <li><label htmlFor="modal-register">register</label></li>
+                <li><button onClick={() => setLoginOpen(true)}>login</button></li>
+                <li><button onClick={() => setRegisterOpen(true)}>register</button></li>
               </>
             )}
           </ul>
         </div>
       </div>
-      { modalOpen && (
-        <Login setModalOpen={setModalOpen} />
+      { loginOpen && (
+        <Login setLoginOpen={setLoginOpen} />
       )}
-      <Register />
+      { registerOpen && (
+        <Register setRegisterOpen={setRegisterOpen} />
+      )}
     </div>
   )
 }
