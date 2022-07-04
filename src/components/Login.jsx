@@ -4,9 +4,6 @@ import ReactDOM from "react-dom";
 
 function Login(props) {
 
-  // logs out on refresh
-  // hmmm
-
   const auth = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
