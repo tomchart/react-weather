@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { useQuery } from "react-query";
 import { WeatherContext } from "../context/WeatherContext.js";
 import WeatherChart from "./WeatherChart.jsx";
 import WeatherForecastCards from "./WeatherForecastCards.jsx";
@@ -16,40 +15,29 @@ function WeatherResults() {
     results,
   } = useContext(WeatherContext);
 
-  // const {
-  //   data,
-  //   isLoading,
-  //   isError,
-  //   error,
-  //   isSuccess
-  // } = useQuery(searchInput + '_' + searchType, api.get(apiRoutes[searchType] + searchInput));
-
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
   const [error, setError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(null);
 
-  function fetch(){
+  async function fetch(){
     setIsLoading(true);
-    let promise = api.get(apiRoutes[searchType] + searchInput)
-    promise.then(response => {
-      console.log('response: ')
-      console.log(response)
-      setData(response);
-    })
+    await api.get(apiRoutes[searchType] + searchInput)
+      .then(response => {
+        setData(response);
+      })
   }
-
-  // function fetchWeather() {
-  //   console.log(apiRoutes[searchType] + searchInput)
-  //   return api.get(apiRoutes[searchType] + searchInput);
-  // }
 
   function setDataFetchState() {
     setPreFetch(false);
     setIsLoading(false);
     setResults(data.data);
-    setIsSuccess(true);
+    if (data.status === 200) {
+      setIsSuccess(true);
+    } else {
+      setIsSuccess(false);
+    };
   };
 
   useEffect(() => {
@@ -60,9 +48,7 @@ function WeatherResults() {
   }, [])
 
   useEffect(() => {
-    console.log('data changed: ' + data);
     if (preFetch && data) {
-      console.log('success, set fetch state')
       setDataFetchState();
     }
   }, [data]);
