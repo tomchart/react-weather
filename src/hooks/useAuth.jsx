@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 import api from "../services/Api.jsx";
+import useUserData from "./useUser.jsx";
 
 const authContext = createContext();
 
@@ -18,7 +19,7 @@ export const useAuth = () => {
 
 // Provider hook that creates auth object and handles state
 function useProvideAuth() {
-  const [user, setUser] = useState(null);
+  const user = useUserData();
   const [error, setError] = useState(null);
 
   // Wrap any API methods we want to use making sure ...
@@ -30,12 +31,13 @@ function useProvideAuth() {
       password: password
       }) 
       .then((response) => {
-        setUser(response.data);
-        setError(false);
+        localStorage.setItem('user', JSON.stringify(response.data));
+        window.dispatchEvent(new Event('storage')) 
         return response.data;
       })
       .catch((response) => {
-        setUser(false);
+        localStorage.setItem('user', null);
+        window.dispatchEvent(new Event('storage')) 
         setError(true);
         return response.data;
       });
@@ -47,12 +49,14 @@ function useProvideAuth() {
       password: password
     })
       .then((response) => {
-        setUser(response.data);
+        localStorage.setItem('user', JSON.stringify(response.data));
+        window.dispatchEvent(new Event('storage')) 
         setError(false);
         return response.data;
       })
       .catch((response) => {
-        setUser(false);
+        localStorage.setItem('user', null);
+        window.dispatchEvent(new Event('storage')) 
         setError(true);
         return response.data;
       });
@@ -60,7 +64,8 @@ function useProvideAuth() {
   const logout = () => {
     return api.post('/api/logout')
       .then(() => {
-        setUser(false);
+        localStorage.setItem('user', null);
+        window.dispatchEvent(new Event('storage')) 
       });
   };
 
