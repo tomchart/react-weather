@@ -25,7 +25,6 @@ function useProvideAuth() {
   // Wrap any API methods we want to use making sure ...
   // ... to save the user to state.
   const login = (email, password) => {
-    console.log('login hook')
     return api.post('/api/login', {
       email: email,
       password: password
@@ -68,6 +67,21 @@ function useProvideAuth() {
         window.dispatchEvent(new Event('storage')) 
       });
   };
+
+function checkLoggedIn() {
+  api.get('/api/user')
+    .then((response) => {
+      if (response.data.length === 0) {
+        localStorage.setItem('user', null);
+        window.dispatchEvent(new Event('storage')) 
+      }
+    })
+}
+
+useEffect(() => {
+    checkLoggedIn();
+}, [user])
+
 
   // Return the user object and auth methods
   return {
