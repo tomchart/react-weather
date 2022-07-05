@@ -21,18 +21,33 @@ export const useAuth = () => {
 function useProvideAuth() {
   const user = useUserData();
   const [error, setError] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [location, setLocation] = useState(null);
 
-  // Wrap any API methods we want to use making sure ...
-  // ... to save the user to state.
+  function loginCleanup(response) {
+    localStorage.setItem(('user'), JSON.stringify(response.data));
+    window.dispatchEvent(new Event('storage')) 
+    setLoggedIn(() => true);
+    if (response.data.location) {
+      setLocation(() => response.data.location);
+    }
+    return response.data;
+  };
+
+  function logoutCleanup() {
+    localStorage.setItem('user', null);
+    window.dispatchEvent(new Event('storage')) 
+    setLoggedIn(() => false);
+  };
+
   const login = (email, password) => {
     return api.post('/api/login', {
       email: email,
       password: password
       }) 
       .then((response) => {
-        localStorage.setItem('user', JSON.stringify(response.data));
-        window.dispatchEvent(new Event('storage')) 
-        return response.data;
+        let data = loginCleanup(response);
+        return data;
       })
       .catch((response) => {
         localStorage.setItem('user', null);
@@ -41,6 +56,7 @@ function useProvideAuth() {
         return response.data;
       });
   };
+
   const register = (name, email, password) => {
     return api.post('/api/register', {
       name: name,
@@ -48,10 +64,8 @@ function useProvideAuth() {
       password: password
     })
       .then((response) => {
-        localStorage.setItem('user', JSON.stringify(response.data));
-        window.dispatchEvent(new Event('storage')) 
-        setError(false);
-        return response.data;
+        let data = loginCleanup(response);
+        return data;
       })
       .catch((response) => {
         localStorage.setItem('user', null);
@@ -60,28 +74,46 @@ function useProvideAuth() {
         return response.data;
       });
   };
+
   const logout = () => {
     return api.post('/api/logout')
       .then(() => {
-        localStorage.setItem('user', null);
-        window.dispatchEvent(new Event('storage')) 
+        logoutCleanup();
+      })
+      .catch((response) => {
+        setError(true);
+        return response.data;
       });
   };
 
-function checkLoggedIn() {
-  api.get('/api/user')
-    .then((response) => {
-      if (response.data.length === 0) {
-        localStorage.setItem('user', null);
-        window.dispatchEvent(new Event('storage')) 
-      }
+  const storeLocation = (location) => {
+    return api.post('/api/location/store', {
+      location: location,
     })
-}
+      .then((response) => {
+        localStorage.setItem('user', JSON.stringify(response.data));
+        window.dispatchEvent(new Event('storage')) 
+      })
+      .catch((response) => {
+        setError(true);
+        return response.data;
+      });
+  }
 
-useEffect(() => {
-    checkLoggedIn();
-}, [user])
+  function checkLoggedIn() {
+    api.get('/api/user')
+      .then((response) => {
+        if (response.data.length === 0) {
+          localStorage.setItem('user', null);
+          window.dispatchEvent(new Event('storage')) 
+          setLoggedIn(() => false);
+        }
+      })
+  }
 
+  useEffect(() => {
+      checkLoggedIn();
+  }, [user])
 
   // Return the user object and auth methods
   return {
@@ -90,5 +122,8 @@ useEffect(() => {
     login,
     register,
     logout,
+    storeLocation,
+    loggedIn,
+    location
   };
 }
