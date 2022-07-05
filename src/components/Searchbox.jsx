@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { WeatherContext } from "../context/WeatherContext.js";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 function Searchbox() {
   const {
@@ -10,6 +11,12 @@ function Searchbox() {
     setWeatherVisible
   } = useContext(WeatherContext);
   const searchInputEl = useRef(null);
+  const auth = useAuth();
+
+  function handleSave(event) {
+    event.preventDefault();
+    auth.storeLocation(searchInputEl.current.value);
+  }
 
   function handleInput(event) {
     if (event.target.value) {
@@ -31,9 +38,17 @@ function Searchbox() {
     }
   }
 
+  function searchUserLocation() {
+    if (auth.location != null) {
+      setSearchType('today');
+      setSearchInput(auth.location)
+      setWeatherVisible(prevWeatherVisible => !weatherVisible);
+    }
+  }
+
   useEffect(() => {
-    searchInputEl.current.focus();
-  }, []);
+    searchUserLocation();
+  }, [auth.loggedIn])
 
   return (
     <>
@@ -63,6 +78,9 @@ function Searchbox() {
               <button
                 id="save-button"
                 name="save-button"
+                onClick={(event) => {
+                  handleSave(event)
+                }}
                 className="p-2 pt-5 pr-3"
               >
                 <svg 
@@ -73,9 +91,9 @@ function Searchbox() {
                   xmlns="http://www.w3.org/2000/svg" 
                   aria-labelledby="saveIconTitle" 
                   stroke="#a6adba" 
-                  stroke-width="1" 
-                  stroke-linecap="square" 
-                  stroke-linejoin="miter" 
+                  strokeWidth="1" 
+                  strokeLinecap="square" 
+                  strokeLinejoin="miter" 
                   fill="none" 
                   color="#000000"
                 >
