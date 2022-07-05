@@ -1,6 +1,10 @@
 import { useContext } from "react";
 import { WeatherContext } from "../context/WeatherContext.js";
 
+// TODO
+// starting with a today search
+// followed by a forecast search
+// will only show forecast cards for the current day
 function WeatherForecastCards () {
 
   const { 
