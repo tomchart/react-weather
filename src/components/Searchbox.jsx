@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { WeatherContext } from "../context/WeatherContext.js";
 import { useAuth } from "../hooks/useAuth.jsx";
 
@@ -12,6 +12,7 @@ function Searchbox() {
   } = useContext(WeatherContext);
   const searchInputEl = useRef(null);
   const auth = useAuth();
+  const [animate, setAnimate] = useState(false);
 
   function handleSave(event) {
     event.preventDefault();
@@ -19,6 +20,7 @@ function Searchbox() {
   }
 
   function handleInput(event) {
+    setWeatherVisible(false);
     if (event.target.value) {
       setSearchInput(event.target.value.replace(/\s+/g, ''));
     } else if (event.target.form[0].value) {
@@ -50,6 +52,10 @@ function Searchbox() {
     searchUserLocation();
   }, [auth.loggedIn])
 
+  useEffect(() => {
+    setAnimate(true);
+  }, [auth.location]);
+
   return (
     <>
       <form 
@@ -78,12 +84,22 @@ function Searchbox() {
               <button
                 id="save-button"
                 name="save-button"
+                type="button"
                 onClick={(event) => {
                   handleSave(event)
                 }}
-                className="p-2 pt-5 pr-3"
+                className="p-2 pt-5 pr-3 transform transition duration-500 hover:scale-105"
               >
+                { animate && (
+                  <span 
+                    className="animate-pulse absolute inline-flex h-2 right-3 w-2 rounded-full bg-green-400 opacity-100"
+                  />
+                )}
                 <svg 
+                  className={`${
+                    animate && "animate-wiggle"
+                  }`}
+                  onAnimationEnd={() => setAnimate(false)}
                   width="24px" 
                   height="24px" 
                   viewBox="0 0 24 24" 
@@ -108,6 +124,7 @@ function Searchbox() {
         </div>
         <button 
           className="btn btn-primary ml-4 mt-3"
+          type="button"
           onClick={event => {
             handleInput(event)
             setSearchType('today')
@@ -117,6 +134,7 @@ function Searchbox() {
         </button>
         <button 
           className="btn btn-primary ml-2 mt-3"
+          type="button"
           onClick={event => {
             handleInput(event)
             setSearchType('forecast')
