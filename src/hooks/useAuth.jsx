@@ -23,7 +23,8 @@ function useProvideAuth() {
   const [error, setError] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [location, setLocation] = useState(null);
-  const [locationError, setLocationError] = useState(null);
+  const [locationError, setLocationError] = useState(false);
+  const [locationSuccess, setLocationSuccess] = useState(false);
 
   function loginCleanup(response) {
     localStorage.setItem(('user'), JSON.stringify(response.data));
@@ -39,6 +40,7 @@ function useProvideAuth() {
     localStorage.setItem('user', null);
     window.dispatchEvent(new Event('storage')) 
     setLoggedIn(() => false);
+    setLocation(() => null);
   };
 
   const login = (email, password) => {
@@ -95,6 +97,7 @@ function useProvideAuth() {
         localStorage.setItem('user', JSON.stringify(response.data));
         window.dispatchEvent(new Event('storage'));
         setLocation(response.data.location);
+        setLocationSuccess(true);
       })
       .catch((response) => {
         setLocationError(true);
@@ -102,19 +105,17 @@ function useProvideAuth() {
       });
   }
 
-  function checkLoggedIn() {
-    api.get('/api/user')
-      .then((response) => {
-        if (response.data.length === 0) {
-          localStorage.setItem('user', null);
-          window.dispatchEvent(new Event('storage')) 
-          setLoggedIn(() => false);
-        }
-      })
+  function setStateFromSession() {
+    if (user) {
+      setLoggedIn(true);
+      if (user.location) {
+        setLocation(user.location);
+      }
+    }
   }
 
   useEffect(() => {
-      checkLoggedIn();
+      setStateFromSession();
   }, [user])
 
   // Return the user object and auth methods
@@ -126,6 +127,10 @@ function useProvideAuth() {
     logout,
     storeLocation,
     loggedIn,
-    location
+    location,
+    locationError,
+    setLocationError,
+    locationSuccess,
+    setLocationSuccess
   };
 }
