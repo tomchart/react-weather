@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { WeatherContext } from "../context/WeatherContext.js";
 import { useAuth } from "../hooks/useAuth.jsx";
 
@@ -12,7 +12,6 @@ function Searchbox() {
   } = useContext(WeatherContext);
   const searchInputEl = useRef(null);
   const auth = useAuth();
-  const [animate, setAnimate] = useState(false);
 
   function handleSave(event) {
     event.preventDefault();
@@ -52,10 +51,6 @@ function Searchbox() {
     searchUserLocation();
   }, [auth.loggedIn])
 
-  useEffect(() => {
-    setAnimate(true);
-  }, [auth.location]);
-
   return (
     <>
       <form 
@@ -90,16 +85,22 @@ function Searchbox() {
                 }}
                 className="p-2 pt-5 pr-3 transform transition duration-500 hover:scale-105"
               >
-                { animate && (
+               { auth.locationError && (
                   <span 
-                    className="animate-pulse absolute inline-flex h-2 right-3 w-2 rounded-full bg-green-400 opacity-100"
+                    className="animate-ping absolute inline-flex h-2 right-3 w-2 rounded-full bg-red-400 opacity-100"
+                    onAnimationEnd={() => auth.setLocationError(false)}
+                  />
+                )}
+                { auth.locationSuccess && (
+                  <span 
+                    className="animate-ping absolute inline-flex h-2 right-3 w-2 rounded-full bg-green-400 opacity-100"
+                    onAnimationEnd={() => auth.setLocationSuccess(false)}
                   />
                 )}
                 <svg 
                   className={`${
-                    animate && "animate-wiggle"
+                    auth.locationSuccess && "animate-wiggle"
                   }`}
-                  onAnimationEnd={() => setAnimate(false)}
                   width="24px" 
                   height="24px" 
                   viewBox="0 0 24 24" 
