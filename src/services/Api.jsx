@@ -6,7 +6,6 @@ const apiClient = axios.create({
 });
 
 function get(url) {
-  // .then and return promise with await
   return apiClient.get('/sanctum/csrf-cookie')
     .then((response) => {
       return apiClient.get(url);
