@@ -124,7 +124,6 @@ function Searchbox() {
         </div>
         <button 
           className="btn btn-primary ml-4 mt-3"
-          type="button"
           onClick={event => {
             handleInput(event)
             setSearchType('today')
@@ -134,7 +133,6 @@ function Searchbox() {
         </button>
         <button 
           className="btn btn-primary ml-2 mt-3"
-          type="button"
           onClick={event => {
             handleInput(event)
             setSearchType('forecast')
