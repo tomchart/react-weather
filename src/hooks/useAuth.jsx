@@ -23,6 +23,7 @@ function useProvideAuth() {
   const [error, setError] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [location, setLocation] = useState(null);
+  const [locationError, setLocationError] = useState(null);
 
   function loginCleanup(response) {
     localStorage.setItem(('user'), JSON.stringify(response.data));
@@ -92,10 +93,11 @@ function useProvideAuth() {
     })
       .then((response) => {
         localStorage.setItem('user', JSON.stringify(response.data));
-        window.dispatchEvent(new Event('storage')) 
+        window.dispatchEvent(new Event('storage'));
+        setLocation(response.data.location);
       })
       .catch((response) => {
-        setError(true);
+        setLocationError(true);
         return response.data;
       });
   }
