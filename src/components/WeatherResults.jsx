@@ -32,9 +32,9 @@ function WeatherResults() {
   function setDataFetchState() {
     setPreFetch(false);
     setIsLoading(false);
-    setResults(data.data);
-    if (data.status === 200) {
+    if (data.status === 200 && typeof data.data == "object") {
       setIsSuccess(true);
+      setResults(data.data);
     } else {
       setIsSuccess(false);
     };
