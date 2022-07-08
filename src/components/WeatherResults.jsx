@@ -21,9 +21,9 @@ function WeatherResults() {
   const [error, setError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(null);
 
-  async function fetch(){
+  function fetch(){
     setIsLoading(true);
-    await api.get(apiRoutes[searchType] + searchInput)
+    api.get(apiRoutes[searchType] + searchInput)
       .then(response => {
         setData(response);
       })
