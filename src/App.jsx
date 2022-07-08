@@ -30,21 +30,28 @@ function App() {
     setCurrentDateTime(current);
   }
 
-  function filterFutureHours(dayObject, current=currentDateTime) {
-    var dayObjectDate = new Date(dayObject.datetime);
-    var dayDifference = differenceInDays(parseISO(current), dayObjectDate);
+  function filterFutureHours(datesWithHours, current=currentDateTime) {
     var futureHours = [];
-    if (dayDifference <= 1 && dayDifference >= 0) {
-      dayObject.hours.map(hourObject => {
-        var hourObjectDatetime = new Date(dayObject.datetime + ' ' + hourObject.datetime);
-        var hourDifference = differenceInHours(parseISO(current), hourObjectDatetime);
-        
-        // if less than a day in the future and hour like HH % 3 = 0 then store for display to user
-        if (hourDifference <= 1 && hourDifference >= -24 && hourObject.datetime.substring(0, 2) % 3 === 0) {
-          futureHours.push(hourObject);
-        };
-      });
-    };
+    var initialHour = new Date;
+    datesWithHours.map(dateWithHour => {
+      let datetime = parseISO(dateWithHour.date + ' ' + dateWithHour.hourObject.datetime);
+      let dayDifference = differenceInDays(parseISO(current), datetime);
+      if (dayDifference >= -1 && dayDifference <= 0) {
+        let hourDifference = differenceInHours(parseISO(current), datetime);
+        if (hourDifference <= 0 && hourDifference >= -23) {
+          if (futureHours.length === 0) {
+            futureHours.push(dateWithHour);
+            initialHour.setDate(datetime.getDate());
+            initialHour.setTime(datetime.getTime());
+          } else {
+            let hourDiffToInitial = differenceInHours(initialHour, datetime);
+            if (hourDiffToInitial % 3 === 0) {
+              futureHours.push(dateWithHour);
+            }
+          }
+        }
+      };
+    })
     return futureHours;
   }
 
@@ -52,13 +59,25 @@ function App() {
     if (!results && !currentDateTime) {
       return;
     }; 
-    var futureHourObjectArrays = [];
+    var futureHourObjectArray = [];
+
+    // pass all dayObjects received to filterFutureHours
+    let datesWithHours = [];
     results.days.map(day => {
-      // pass all dayObjects received to filterFutureHours
-      futureHourObjectArrays.push(filterFutureHours(day));
+      // this key is called datetime but is actually just a date
+      let date = day.datetime;
+      day.hours.map(hour => {
+        let datetimeObject = {
+          ['date']: date,
+          ['hourObject']: hour
+        };
+        datesWithHours.push(datetimeObject);
+      })
     });
+    futureHourObjectArray.push(filterFutureHours(datesWithHours));
+
     // flatten array of objects returned by filterFutureHours
-    var futureHourObjects = [].concat(...futureHourObjectArrays);
+    var futureHourObjects = [].concat(...futureHourObjectArray);
     setfutureHours(futureHourObjects);
   }
 
@@ -67,7 +86,8 @@ function App() {
       return;
     };
     var hourDatetimes = [];
-    futureHours.map(hour => {
+    futureHours.map(futureHour => {
+      let hour = futureHour.hourObject;
       hourDatetimes.push(hour.datetime.substring(0, hour.datetime.length - 3));
     })
     setfutureHourDatetimes(hourDatetimes);
@@ -78,7 +98,8 @@ function App() {
       return;
     };
     var hourTemps = [];
-    futureHours.map(hour => {
+    futureHours.map(futureHour => {
+      let hour = futureHour.hourObject;
       hourTemps.push(hour.temp);
     })
     setfutureHourTemps(hourTemps);
