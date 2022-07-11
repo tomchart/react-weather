@@ -4,6 +4,7 @@ import WeatherChart from "./WeatherChart.jsx";
 import WeatherForecastCards from "./WeatherForecastCards.jsx";
 import CountUp from 'react-countup';
 import api from "../services/Api.jsx";
+import sprite from "../components/icons/sprite.svg";
 
 function WeatherResults() {
   const [preFetch, setPreFetch] = useState(true);
@@ -20,6 +21,7 @@ function WeatherResults() {
   const [isError, setIsError] = useState(null);
   const [error, setError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(null);
+  const [iconName, setIconName] = useState();
 
   function fetch(){
     setIsLoading(true);
@@ -35,6 +37,7 @@ function WeatherResults() {
     if (data.status === 200 && typeof data.data == "object") {
       setIsSuccess(true);
       setResults(data.data);
+      setIconName(data.data.currentConditions.icon)
     } else {
       setIsSuccess(false);
     };
@@ -74,7 +77,14 @@ function WeatherResults() {
         { isSuccess && !preFetch && (
           <>
             <div className="grid">
-              <div className="grid grid-cols-3 grid-rows-1">
+              <div className="grid grid-cols-4 grid-rows-1">
+                <div className="col-span-1 flex justify-center items-center">
+                  { iconName && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" stroke="#a6adba" fill="none" className="mt-2.5">
+                      <use xlinkHref={`${sprite}#${iconName}`} />
+                    </svg>
+                  )}
+                </div>
                 <div className="col-span-1 justify-left">
                   <CountUp 
                     end={results.currentConditions.temp} 
@@ -90,15 +100,17 @@ function WeatherResults() {
                   </CountUp>
                   <div className="text-xs">Feels like: {results.currentConditions.feelslike}°C</div>
                 </div>
-                <div className="col-span-2 text-xs mt-3 ml-2">
+                <div className="col-span-2 text-xs mt-3 ml-6">
                   <div>{results.currentConditions.conditions}</div>
                   <div>Precipitation: {results.currentConditions.precip}%</div>
                   <div>Wind speed: {results.currentConditions.windspeed}mph</div>
                 </div>
               </div>
-              <div className="mt-4">{results.resolvedAddress}</div>
-              <div className="">{results.currentConditions.datetime} ({results.timezone})</div>
-              <div className="mt-4">{results.description}</div>
+              <div className="grid justify-center">
+                <div className="mt-4">{results.resolvedAddress}</div>
+                <div className="">{results.currentConditions.datetime} ({results.timezone})</div>
+                <div className="mt-4">{results.description}</div>
+              </div>
             </div>
             { isSuccess && !preFetch && (
               <WeatherChart />
