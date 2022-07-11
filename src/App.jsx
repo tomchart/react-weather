@@ -29,6 +29,8 @@ function App() {
       if (dayDifference >= -1 && dayDifference <= 0) {
         let hourDifference = differenceInHours(parseISO(current), datetime);
         if (hourDifference <= 0 && hourDifference >= -23) {
+          // below we do some mangling to sort out the horrific data returned...
+          // ...by the visualcrossing api - just fixing dates and times really
           dateWithHour.hourObject.date = dateWithHour.date
           dateWithHour.hourObject.time = dateWithHour.hourObject.datetime
           dateWithHour.hourObject.datetime = dateWithHour.hourObject.date + " " + dateWithHour.hourObject.time
@@ -45,18 +47,14 @@ function App() {
         }
       };
     })
-    let futureHourObject = {};
-    futureHours.map((futureHour, index) => {
-      futureHourObject[index] = futureHour;
-    })
-    return futureHourObject;
+    return futureHours;
   }
 
   function stripFutureHourObjects() {
     if (!results) {
       return;
     }; 
-
+    var futureHourObjectArray = [];
     // pass all dayObjects received to filterFutureHours
     let datesWithHours = [];
     results.days.map(day => {
@@ -70,8 +68,11 @@ function App() {
         datesWithHours.push(datetimeObject);
       })
     });
-    let futureHourObject = filterFutureHours(datesWithHours);
-    setfutureHours(futureHourObject);
+    futureHourObjectArray.push(filterFutureHours(datesWithHours));
+
+    // flatten array of objects returned by filterFutureHours
+    var futureHourObjects = [].concat(...futureHourObjectArray);
+    setfutureHours(futureHourObjects);
   }
 
   useEffect(() => {
