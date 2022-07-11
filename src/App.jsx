@@ -21,6 +21,8 @@ function App() {
   const [futureHours, setfutureHours] = useState([]);
   const [futureHourDatetimes, setfutureHourDatetimes] = useState([]);
   const [futureHourTemps, setfutureHourTemps] = useState([]);
+  const [futureHourPrecip, setfutureHourPrecip] = useState([]);
+  const [futureHourWind, setfutureHourWind] = useState([]);
 
   function formatCurrentDateTime() {
     if (!results) {
@@ -105,6 +107,32 @@ function App() {
     setfutureHourTemps(hourTemps);
   }
 
+  function stripFutureHourPrecip() {
+    if (!futureHours) {
+      return;
+    };
+    var hourPrecip = [];
+    futureHours.map(futureHour => {
+      let hour = futureHour.hourObject;
+      hourPrecip.push(hour.precip);
+    })
+    setfutureHourPrecip(hourPrecip);
+  }
+
+  function stripFutureHourWind() {
+    if (!futureHours) {
+      return;
+    };
+    var hourWind = [];
+    futureHours.map((futureHour, index) => {
+      let hour = futureHour.hourObject;
+      hour.date = futureHours[index].date + " " + hour.datetime;
+      // hourWind.push({windspeed: hour.windspeed, winddir: hour.winddir});
+      hourWind.push(hour);
+    })
+    setfutureHourWind(hourWind);
+  }
+
   useEffect(() => {
     formatCurrentDateTime();
   }, [results]);
@@ -116,6 +144,8 @@ function App() {
   useEffect(() => {
     stripFutureHourDatetimes();
     stripFutureHourTemps();
+    stripFutureHourPrecip();
+    stripFutureHourWind();
   }, [futureHours]);
 
   return (
@@ -133,6 +163,8 @@ function App() {
       futureHours,
       futureHourDatetimes,
       futureHourTemps,
+      futureHourPrecip,
+      futureHourWind,
       isLoggedIn,
       setIsLoggedIn,
     }}>
