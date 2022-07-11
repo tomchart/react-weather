@@ -21,7 +21,7 @@ function WindChart () {
       name: 'Time',
       nameLocation: 'center',
       axisLabel: {
-        formatter: function (value, index) {
+        formatter: function (value) {
           return value.substring(11, value.length - 3)
         },
       },
@@ -48,9 +48,9 @@ function WindChart () {
         symbolRotate: (value) => {
           return -value.winddir;
         },
-        dimensions: ["conditions", "date", "datetime", "datetimeEpoch", "dew", "feelslike", "humidity", "icon", "precip", "precipprob", "preciptype", "pressure", "severerisk", "snow", "snowdepth", "solarenergy", "solarradiation", "source", "stations", "temp", "time", "uvindex", "visibility", "winddir", "windgust", "windspeed"],
+        dimensions: ["cloudcover", "conditions", "date", "datetime", "datetimeEpoch", "dew", "feelslike", "humidity", "icon", "precip", "precipprob", "preciptype", "pressure", "severerisk", "snow", "snowdepth", "solarenergy", "solarradiation", "source", "stations", "temp", "time", "uvindex", "visibility", "winddir", "windgust", "windspeed"],
         encode: {
-          x: "date", 
+          x: "datetime", 
           y: "windspeed",
         },
         symbolSize: 16,
@@ -70,7 +70,7 @@ function WindChart () {
     tooltip: {
       trigger: 'axis',
       formatter: function (params) {
-        return `${params[0].value.date}<br />Wind speed: ${params[0].value.windspeed}mph<br />Wind direction: ${params[0].value.winddir}° ${degToCompass(params[0].value.winddir)}`;
+        return `${params[0].value.datetime}<br />Wind speed: ${params[0].value.windspeed}mph<br />Wind direction: ${params[0].value.winddir}° ${degToCompass(params[0].value.winddir)}`;
       }
     },
   };

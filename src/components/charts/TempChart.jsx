@@ -7,14 +7,17 @@ function TempChart () {
     futureHours,
   } = useContext(WeatherContext);
 
-  console.log(futureHours)
-
   const options = {
     grid: { show: false },
     color: ['#ffd500'],
     xAxis: {
       name: 'Time',
       nameLocation: 'center',
+      axisLabel: {
+        formatter: function (value) {
+          return value.substring(11, value.length - 3)
+        },
+      },
       nameTextStyle: {
         padding: [12, 0, 0, 0]
       },
@@ -37,7 +40,7 @@ function TempChart () {
     },
     series: [
       {
-        dimensions: ["conditions", "date", "datetime", "datetimeEpoch", "dew", "feelslike", "humidity", "icon", "precip", "precipprob", "preciptype", "pressure", "severerisk", "snow", "snowdepth", "solarenergy", "solarradiation", "source", "stations", "temp", "time", "uvindex", "visibility", "winddir", "windgust", "windspeed"],
+        dimensions: ["cloudcover", "conditions", "date", "datetime", "datetimeEpoch", "dew", "feelslike", "humidity", "icon", "precip", "precipprob", "preciptype", "pressure", "severerisk", "snow", "snowdepth", "solarenergy", "solarradiation", "source", "stations", "temp", "time", "uvindex", "visibility", "winddir", "windgust", "windspeed"],
         encode: {
           x: "datetime", 
           y: "temp",
@@ -51,7 +54,7 @@ function TempChart () {
         },
         label: {
           show: true,
-          formatter: '{@score}',
+          formatter: '{@temp}',
           textBorderWidth: 0,
           color: '#FFFFFF',
         },
@@ -59,6 +62,10 @@ function TempChart () {
     ],
     tooltip: {
       trigger: 'axis',
+      formatter: function (params) {
+        let value = params[0].value;
+        return `${value.datetime}<br />Temperature: ${value.temp}°<br />Feels like: ${value.feelslike}°<br />Humidity: ${value.humidity}%<br />Pressure: ${value.pressure} hPa<br />UV Index: ${value.uvindex}`;
+      }
     },
   };
 
