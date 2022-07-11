@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { WeatherContext } from "../context/WeatherContext.js";
-import WeatherChart from "./WeatherChart.jsx";
+import TempChart from "./charts/TempChart.jsx";
+import PrecipChart from "./charts/PrecipChart.jsx";
+import WindChart from "./charts/WindChart.jsx";
 import WeatherForecastCards from "./WeatherForecastCards.jsx";
 import CountUp from 'react-countup';
 import api from "../services/Api.jsx";
@@ -22,6 +24,9 @@ function WeatherResults() {
   const [error, setError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(null);
   const [iconName, setIconName] = useState();
+  const [tempChartVisible, setTempChartVisible] = useState(true);
+  const [precipChartVisible, setPrecipChartVisible] = useState(false);
+  const [windChartVisible, setWindChartVisible] = useState(false);
 
   function fetch(){
     setIsLoading(true);
@@ -42,6 +47,24 @@ function WeatherResults() {
       setIsSuccess(false);
     };
   };
+
+  function handleTempButton() {
+    setPrecipChartVisible(false);
+    setWindChartVisible(false);
+    setTempChartVisible(true);
+  }
+
+  function handlePrecipButton() {
+    setTempChartVisible(false);
+    setWindChartVisible(false);
+    setPrecipChartVisible(true);
+  }
+
+  function handleWindButton() {
+    setTempChartVisible(false);
+    setPrecipChartVisible(false);
+    setWindChartVisible(true);
+  }
 
   useEffect(() => {
     if (preFetch) {
@@ -108,12 +131,38 @@ function WeatherResults() {
               </div>
               <div className="grid justify-center">
                 <div className="mt-4">{results.resolvedAddress}</div>
-                <div className="">{results.currentConditions.datetime} ({results.timezone})</div>
+                <div className="">As of: {results.currentConditions.datetime} ({results.timezone})</div>
                 <div className="mt-4">{results.description}</div>
               </div>
             </div>
-            { isSuccess && !preFetch && (
-              <WeatherChart />
+            <div className="inline-flex mt-4">
+              <button 
+                className={`btn btn-sm btn-warning mr-2 ${tempChartVisible ? "" : "btn-outline"}`}
+                onClick={handleTempButton}
+              >
+                Temperature
+              </button>
+              <button 
+                className={`btn btn-sm btn-info mr-2 ${precipChartVisible ? "" : "btn-outline"}`}
+                onClick={handlePrecipButton}
+              >
+                Precipitation
+              </button>
+              <button 
+                className={`btn btn-sm mr-2 ${windChartVisible ? "btn-outline bg-neutral-content text-black border-neutral-content" : "btn-outline"}`}
+                onClick={handleWindButton}
+              >
+                Wind
+              </button>
+            </div>
+            { tempChartVisible && !preFetch && (
+              <TempChart />
+            )}
+            { precipChartVisible && !preFetch && (
+              <PrecipChart />
+            )}
+            { windChartVisible && !preFetch && (
+              <WindChart />
             )}
             { isSuccess && !preFetch && searchType === 'forecast' && (
               <WeatherForecastCards />
