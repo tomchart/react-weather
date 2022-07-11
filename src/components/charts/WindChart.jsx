@@ -4,8 +4,7 @@ import ReactECharts from 'echarts-for-react';
 
 function WindChart () {
   const { 
-    futureHourDatetimes,
-    futureHourWind,
+    futureHours,
   } = useContext(WeatherContext);
 
   // from https://stackoverflow.com/a/25867068/17973844 - thanks Matt Frear!
@@ -35,17 +34,13 @@ function WindChart () {
     yAxis: {
       show: false,
       type: 'value',
-      name: 'Wind speed (mph)',
-      nameTextStyle: {
-        padding: [6, 0, 0, 0]
-      },
       interval: 1,
       axisLine: {
         show: false,
       },
     },
     dataset: {
-      source: futureHourWind
+      source: futureHours
     },
     series: [
       {
@@ -53,7 +48,7 @@ function WindChart () {
         symbolRotate: (value) => {
           return -value.winddir;
         },
-        dimensions: ["conditions", "date", "datetime", "datetimeEpoch", "dew", "feelslike", "humidity", "icon", "precip", "precipprob", "preciptype", "pressure", "severerisk", "snow", "snowdepth", "solarenergy", "solarradiation", "source", "stations", "temp", "uvindex", "visibility", "winddir", "windgust", "windspeed"],
+        dimensions: ["conditions", "date", "datetime", "datetimeEpoch", "dew", "feelslike", "humidity", "icon", "precip", "precipprob", "preciptype", "pressure", "severerisk", "snow", "snowdepth", "solarenergy", "solarradiation", "source", "stations", "temp", "time", "uvindex", "visibility", "winddir", "windgust", "windspeed"],
         encode: {
           x: "date", 
           y: "windspeed",
@@ -82,7 +77,7 @@ function WindChart () {
 
   return (
     <div className="w-1/2">
-      { futureHourDatetimes && futureHourWind && (
+      { futureHours && (
         <ReactECharts option={options} />
       )}
     </div>

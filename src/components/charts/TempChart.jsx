@@ -4,9 +4,10 @@ import ReactECharts from 'echarts-for-react';
 
 function TempChart () {
   const { 
-    futureHourDatetimes,
-    futureHourTemps,
+    futureHours,
   } = useContext(WeatherContext);
+
+  console.log(futureHours);
 
   const options = {
     grid: { show: false },
@@ -18,16 +19,11 @@ function TempChart () {
         padding: [12, 0, 0, 0]
       },
       type: 'category',
-      data: futureHourDatetimes,
       boundaryGap: false,
     },
     yAxis: {
       show: false,
       type: 'value',
-      name: 'Temperature (C°)',
-      nameTextStyle: {
-        padding: [6, 0, 0, 0]
-      },
       min: (value) => {
         return Math.round(value.min) - 2;
       },
@@ -36,9 +32,16 @@ function TempChart () {
         show: false,
       },
     },
+    dataset: {
+      source: futureHours
+    },
     series: [
       {
-        data: futureHourTemps,
+        dimensions: ["conditions", "date", "datetime", "datetimeEpoch", "dew", "feelslike", "humidity", "icon", "precip", "precipprob", "preciptype", "pressure", "severerisk", "snow", "snowdepth", "solarenergy", "solarradiation", "source", "stations", "temp", "time", "uvindex", "visibility", "winddir", "windgust", "windspeed"],
+        encode: {
+          x: "datetime", 
+          y: "temp",
+        },
         symbol: 'circle',
         symbolSize: 8,
         type: 'line',
@@ -61,7 +64,7 @@ function TempChart () {
 
   return (
     <div className="w-1/2">
-      { futureHourDatetimes && futureHourTemps && (
+      { futureHours && (
         <ReactECharts option={options} />
       )}
     </div>

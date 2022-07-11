@@ -17,38 +17,29 @@ function App() {
     'today': '/api/weather/today/',
     'forecast': '/api/weather/forecast/',
   };
-  const [currentDateTime, setCurrentDateTime] = useState(null);
   const [futureHours, setfutureHours] = useState([]);
-  const [futureHourDatetimes, setfutureHourDatetimes] = useState([]);
-  const [futureHourTemps, setfutureHourTemps] = useState([]);
-  const [futureHourPrecip, setfutureHourPrecip] = useState([]);
-  const [futureHourWind, setfutureHourWind] = useState([]);
 
-  function formatCurrentDateTime() {
-    if (!results) {
-      return;
-    };
-    var current = new Date(results.days[0].datetime + ' ' + results.currentConditions.datetime).toISOString();
-    setCurrentDateTime(current);
-  }
-
-  function filterFutureHours(datesWithHours, current=currentDateTime) {
-    var futureHours = [];
+  function filterFutureHours(datesWithHours) {
+    var futureHours = {};
     var initialHour = new Date;
+    var current = new Date(results.days[0].datetime + ' ' + results.currentConditions.datetime).toISOString();
     datesWithHours.map(dateWithHour => {
       let datetime = parseISO(dateWithHour.date + ' ' + dateWithHour.hourObject.datetime);
       let dayDifference = differenceInDays(parseISO(current), datetime);
       if (dayDifference >= -1 && dayDifference <= 0) {
         let hourDifference = differenceInHours(parseISO(current), datetime);
         if (hourDifference <= 0 && hourDifference >= -23) {
+          dateWithHour.hourObject.date = dateWithHour.date
+          dateWithHour.hourObject.time = dateWithHour.hourObject.datetime
+          dateWithHour.hourObject.datetime = dateWithHour.hourObject.date + " " + dateWithHour.hourObject.time
           if (futureHours.length === 0) {
-            futureHours.push(dateWithHour);
+            futureHours.push(dateWithHour.hourObject);
             initialHour.setDate(datetime.getDate());
             initialHour.setTime(datetime.getTime());
           } else {
             let hourDiffToInitial = differenceInHours(initialHour, datetime);
             if (hourDiffToInitial % 3 === 0) {
-              futureHours.push(dateWithHour);
+              futureHours.push(dateWithHour.hourObject);
             }
           }
         }
@@ -58,7 +49,7 @@ function App() {
   }
 
   function stripFutureHourObjects() {
-    if (!results && !currentDateTime) {
+    if (!results) {
       return;
     }; 
     var futureHourObjectArray = [];
@@ -78,75 +69,12 @@ function App() {
     });
     futureHourObjectArray.push(filterFutureHours(datesWithHours));
 
-    // flatten array of objects returned by filterFutureHours
-    var futureHourObjects = [].concat(...futureHourObjectArray);
-    setfutureHours(futureHourObjects);
+    setfutureHours(futureHourObjectArray);
   }
-
-  function stripFutureHourDatetimes() {
-    if (!futureHours) {
-      return;
-    };
-    var hourDatetimes = [];
-    futureHours.map(futureHour => {
-      let hour = futureHour.hourObject;
-      hourDatetimes.push(hour.datetime.substring(0, hour.datetime.length - 3));
-    })
-    setfutureHourDatetimes(hourDatetimes);
-  }
-
-  function stripFutureHourTemps() {
-    if (!futureHours) {
-      return;
-    };
-    var hourTemps = [];
-    futureHours.map(futureHour => {
-      let hour = futureHour.hourObject;
-      hourTemps.push(hour.temp);
-    })
-    setfutureHourTemps(hourTemps);
-  }
-
-  function stripFutureHourPrecip() {
-    if (!futureHours) {
-      return;
-    };
-    var hourPrecip = [];
-    futureHours.map(futureHour => {
-      let hour = futureHour.hourObject;
-      hourPrecip.push(hour.precip);
-    })
-    setfutureHourPrecip(hourPrecip);
-  }
-
-  function stripFutureHourWind() {
-    if (!futureHours) {
-      return;
-    };
-    var hourWind = [];
-    futureHours.map((futureHour, index) => {
-      let hour = futureHour.hourObject;
-      hour.date = futureHours[index].date + " " + hour.datetime;
-      // hourWind.push({windspeed: hour.windspeed, winddir: hour.winddir});
-      hourWind.push(hour);
-    })
-    setfutureHourWind(hourWind);
-  }
-
-  useEffect(() => {
-    formatCurrentDateTime();
-  }, [results]);
 
   useEffect(() => {
     stripFutureHourObjects();
-  }, [currentDateTime])
-
-  useEffect(() => {
-    stripFutureHourDatetimes();
-    stripFutureHourTemps();
-    stripFutureHourPrecip();
-    stripFutureHourWind();
-  }, [futureHours]);
+  }, [results])
 
   return (
     <WeatherContext.Provider value={{
@@ -159,12 +87,7 @@ function App() {
       apiRoutes,
       results,
       setResults,
-      currentDateTime,
       futureHours,
-      futureHourDatetimes,
-      futureHourTemps,
-      futureHourPrecip,
-      futureHourWind,
       isLoggedIn,
       setIsLoggedIn,
     }}>
