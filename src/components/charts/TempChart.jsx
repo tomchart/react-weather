@@ -7,7 +7,7 @@ function TempChart () {
     futureHours,
   } = useContext(WeatherContext);
 
-  console.log(futureHours);
+  console.log(futureHours)
 
   const options = {
     grid: { show: false },

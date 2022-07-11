@@ -17,10 +17,10 @@ function App() {
     'today': '/api/weather/today/',
     'forecast': '/api/weather/forecast/',
   };
-  const [futureHours, setfutureHours] = useState([]);
+  const [futureHours, setfutureHours] = useState(null);
 
   function filterFutureHours(datesWithHours) {
-    var futureHours = {};
+    var futureHours = [];
     var initialHour = new Date;
     var current = new Date(results.days[0].datetime + ' ' + results.currentConditions.datetime).toISOString();
     datesWithHours.map(dateWithHour => {
@@ -45,14 +45,17 @@ function App() {
         }
       };
     })
-    return futureHours;
+    let futureHourObject = {};
+    futureHours.map((futureHour, index) => {
+      futureHourObject[index] = futureHour;
+    })
+    return futureHourObject;
   }
 
   function stripFutureHourObjects() {
     if (!results) {
       return;
     }; 
-    var futureHourObjectArray = [];
 
     // pass all dayObjects received to filterFutureHours
     let datesWithHours = [];
@@ -67,9 +70,8 @@ function App() {
         datesWithHours.push(datetimeObject);
       })
     });
-    futureHourObjectArray.push(filterFutureHours(datesWithHours));
-
-    setfutureHours(futureHourObjectArray);
+    let futureHourObject = filterFutureHours(datesWithHours);
+    setfutureHours(futureHourObject);
   }
 
   useEffect(() => {
