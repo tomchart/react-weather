@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { WeatherContext } from "../context/WeatherContext.js";
+import { WeatherContext } from "../../context/WeatherContext.js";
 import ReactECharts from 'echarts-for-react'; 
 
-function WeatherChart () {
+function TempChart () {
   const { 
     futureHourDatetimes,
     futureHourTemps,
@@ -68,4 +68,4 @@ function WeatherChart () {
   )
 }
 
-export default WeatherChart
+export default TempChart
