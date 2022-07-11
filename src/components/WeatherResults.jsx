@@ -24,7 +24,7 @@ function WeatherResults() {
   const [error, setError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(null);
   const [iconName, setIconName] = useState();
-  const [tempChartVisible, setTempChartVisible] = useState(false);
+  const [tempChartVisible, setTempChartVisible] = useState(true);
   const [precipChartVisible, setPrecipChartVisible] = useState(false);
   const [windChartVisible, setWindChartVisible] = useState(false);
 
