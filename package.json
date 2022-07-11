@@ -16,7 +16,8 @@
     "react": "^18.0.0",
     "react-countup": "^6.3.0",
     "react-dom": "^18.0.0",
-    "react-query": "^3.39.1"
+    "react-query": "^3.39.1",
+    "svg-sprite-generator": "^0.0.7"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
