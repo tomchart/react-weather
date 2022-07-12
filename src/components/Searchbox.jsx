@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { WeatherContext } from "../context/WeatherContext.js";
+import Success from "./alerts/Success.jsx";
+import Error from "./alerts/Error.jsx";
 import { useAuth } from "../hooks/useAuth.jsx";
 
 function Searchbox() {
@@ -142,6 +144,12 @@ function Searchbox() {
           forecast
         </button>
       </form>
+      { auth.locationSuccess && (
+        <Success message="Location saved!" />
+      )}
+      { auth.locationError && (
+        <Error message="Unable to save location (are you logged in?)" />
+      )}
     </>
   )
 }
