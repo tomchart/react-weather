@@ -40,7 +40,6 @@ function TempChart () {
     },
     series: [
       {
-        dimensions: ["cloudcover", "conditions", "date", "datetime", "datetimeEpoch", "dew", "feelslike", "humidity", "icon", "precip", "precipprob", "preciptype", "pressure", "severerisk", "snow", "snowdepth", "solarenergy", "solarradiation", "source", "stations", "temp", "time", "uvindex", "visibility", "winddir", "windgust", "windspeed"],
         encode: {
           x: "datetime", 
           y: "temp",
@@ -64,7 +63,7 @@ function TempChart () {
       trigger: 'axis',
       formatter: function (params) {
         let value = params[0].value;
-        return `${value.datetime}<br />Temperature: ${value.temp}°<br />Feels like: ${value.feelslike}°<br />Humidity: ${value.humidity}%<br />Pressure: ${value.pressure} hPa<br />UV Index: ${value.uvindex}`;
+        return `${value.datetime}<br />Temperature: ${value.temp}°<br />Feels like: ${value.feelsLike}°<br />Humidity: ${value.humidity}%<br />Pressure: ${value.pressure} hPa<br />UV Index: ${value.uvIndex}`;
       }
     },
   };

@@ -46,12 +46,11 @@ function WindChart () {
       {
         symbol: 'arrow',
         symbolRotate: (value) => {
-          return -value.winddir;
+          return -value.windDir;
         },
-        dimensions: ["cloudcover", "conditions", "date", "datetime", "datetimeEpoch", "dew", "feelslike", "humidity", "icon", "precip", "precipprob", "preciptype", "pressure", "severerisk", "snow", "snowdepth", "solarenergy", "solarradiation", "source", "stations", "temp", "time", "uvindex", "visibility", "winddir", "windgust", "windspeed"],
         encode: {
           x: "datetime", 
-          y: "windspeed",
+          y: "windSpeed",
         },
         symbolSize: 16,
         type: 'line',
@@ -60,7 +59,7 @@ function WindChart () {
         },
         label: {
           show: true,
-          formatter: '{@windspeed}',
+          formatter: '{@windSpeed} mph',
           textBorderWidth: 0,
           color: '#FFFFFF',
           position: 'top'
@@ -70,7 +69,7 @@ function WindChart () {
     tooltip: {
       trigger: 'axis',
       formatter: function (params) {
-        return `${params[0].value.datetime}<br />Wind speed: ${params[0].value.windspeed}mph<br />Wind direction: ${params[0].value.winddir}° ${degToCompass(params[0].value.winddir)}`;
+        return `${params[0].value.datetime}<br />Wind speed: ${params[0].value.windSpeed}mph<br />Wind direction: ${params[0].value.windDir}° ${degToCompass(params[0].value.windDir)}`;
       }
     },
   };

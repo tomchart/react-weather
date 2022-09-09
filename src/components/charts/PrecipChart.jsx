@@ -36,10 +36,9 @@ function PrecipChart () {
     },
     series: [
       {
-        dimensions: ["cloudcover", "conditions", "date", "datetime", "datetimeEpoch", "dew", "feelslike", "humidity", "icon", "precip", "precipprob", "preciptype", "pressure", "severerisk", "snow", "snowdepth", "solarenergy", "solarradiation", "source", "stations", "temp", "time", "uvindex", "visibility", "winddir", "windgust", "windspeed"],
         encode: {
           x: "datetime", 
-          y: "precip",
+          y: "precipProb",
         },
         symbol: 'circle',
         symbolSize: 8,
@@ -50,7 +49,7 @@ function PrecipChart () {
         },
         label: {
           show: true,
-          formatter: '{@precip}',
+          formatter: '{@precipProb}%',
           textBorderWidth: 0,
           color: '#FFFFFF',
           position: 'top'
@@ -61,7 +60,7 @@ function PrecipChart () {
       trigger: 'axis',
       formatter: function (params) {
         let value = params[0].value;
-        return `${value.datetime}<br />Precipitation: ${value.precip}mm<br />Precip. probability: ${value.precipprob}%<br />`;
+        return `${value.datetime}<br />Precipitation: ${value.precip}mm<br />Probability: ${value.precipProb}%<br />`;
       }
     },
   };
