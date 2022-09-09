@@ -13,11 +13,7 @@ function TempChart () {
     xAxis: {
       name: 'Time',
       nameLocation: 'center',
-      axisLabel: {
-        formatter: function (value) {
-          return value.substring(11, value.length - 3)
-        },
-      },
+      formatter: '{@time}',
       nameTextStyle: {
         padding: [12, 0, 0, 0]
       },
@@ -41,7 +37,7 @@ function TempChart () {
     series: [
       {
         encode: {
-          x: "datetime", 
+          x: "time", 
           y: "temp",
         },
         symbol: 'circle',
