@@ -33,6 +33,7 @@ function WeatherResults() {
     api.get(apiRoutes[searchType] + searchInput)
       .then(response => {
         setData(response);
+        console.log(response);
       })
   }
 
@@ -42,7 +43,7 @@ function WeatherResults() {
     if (data.status === 200 && typeof data.data == "object") {
       setIsSuccess(true);
       setResults(data.data);
-      setIconName(data.data.currentConditions.icon)
+      setIconName(data.data.currentConditions.iconName)
     } else {
       setIsSuccess(false);
     };
@@ -121,18 +122,19 @@ function WeatherResults() {
                       <div className="text-3xl mt-2" ref={countUpRef}></div>
                     )}
                   </CountUp>
-                  <div className="text-xs">Feels like: {results.currentConditions.feelslike}°C</div>
+                  <div className="text-xs">Feels like: {results.currentConditions.feelsLike}°C</div>
                 </div>
                 <div className="col-span-2 text-xs mt-3 ml-6">
                   <div>{results.currentConditions.conditions}</div>
                   <div>Precipitation: {results.currentConditions.precip}%</div>
-                  <div>Wind speed: {results.currentConditions.windspeed}mph</div>
+                  <div>Wind speed: {results.currentConditions.windSpeed}mph</div>
                 </div>
               </div>
               <div className="grid justify-center">
-                <div className="mt-4">{results.resolvedAddress}</div>
-                <div className="">As of: {results.currentConditions.datetime} ({results.timezone})</div>
-                <div className="mt-4">{results.description}</div>
+                <div className="mt-4">{results.currentConditions.resolvedAddress}</div>
+                <div className="">{results.currentConditions.humanDate}</div>
+                <div className="">As of: {results.currentConditions.humanTime}</div>
+                <div className="mt-4">{results.currentConditions.description}</div>
               </div>
             </div>
             <div className="inline-flex mt-4">
