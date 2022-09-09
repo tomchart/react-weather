@@ -53,26 +53,8 @@ function App() {
   function stripFutureHourObjects() {
     if (!results) {
       return;
-    }; 
-    var futureHourObjectArray = [];
-    // pass all dayObjects received to filterFutureHours
-    let datesWithHours = [];
-    results.days.map(day => {
-      // this key is called datetime but is actually just a date
-      let date = day.datetime;
-      day.hours.map(hour => {
-        let datetimeObject = {
-          ['date']: date,
-          ['hourObject']: hour
-        };
-        datesWithHours.push(datetimeObject);
-      })
-    });
-    futureHourObjectArray.push(filterFutureHours(datesWithHours));
-
-    // flatten array of objects returned by filterFutureHours
-    var futureHourObjects = [].concat(...futureHourObjectArray);
-    setfutureHours(futureHourObjects);
+    };
+    setfutureHours(results.futureHours);
   }
 
   useEffect(() => {
