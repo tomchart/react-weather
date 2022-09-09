@@ -5,7 +5,6 @@ import Searchbox from "./components/Searchbox.jsx";
 import WeatherResults from "./components/WeatherResults.jsx";
 import Navbar from "./components/Navbar.jsx";
 import { ProvideAuth } from "./hooks/useAuth.jsx";
-import { differenceInDays, differenceInHours, parseISO } from 'date-fns';
 
 function App() {
   const [searchInput, setSearchInput] = useState(null);
@@ -18,37 +17,6 @@ function App() {
     'forecast': '/api/weather/forecast/',
   };
   const [futureHours, setfutureHours] = useState(null);
-
-  function filterFutureHours(datesWithHours) {
-    var futureHours = [];
-    var initialHour = new Date;
-    var current = new Date(results.days[0].datetime + ' ' + results.currentConditions.datetime).toISOString();
-    datesWithHours.map(dateWithHour => {
-      let datetime = parseISO(dateWithHour.date + ' ' + dateWithHour.hourObject.datetime);
-      let dayDifference = differenceInDays(parseISO(current), datetime);
-      if (dayDifference >= -1 && dayDifference <= 0) {
-        let hourDifference = differenceInHours(parseISO(current), datetime);
-        if (hourDifference <= 0 && hourDifference >= -23) {
-          // below we do some mangling to sort out the horrific data returned...
-          // ...by the visualcrossing api - just fixing dates and times really
-          dateWithHour.hourObject.date = dateWithHour.date
-          dateWithHour.hourObject.time = dateWithHour.hourObject.datetime
-          dateWithHour.hourObject.datetime = dateWithHour.hourObject.date + " " + dateWithHour.hourObject.time
-          if (futureHours.length === 0) {
-            futureHours.push(dateWithHour.hourObject);
-            initialHour.setDate(datetime.getDate());
-            initialHour.setTime(datetime.getTime());
-          } else {
-            let hourDiffToInitial = differenceInHours(initialHour, datetime);
-            if (hourDiffToInitial % 3 === 0) {
-              futureHours.push(dateWithHour.hourObject);
-            }
-          }
-        }
-      };
-    })
-    return futureHours;
-  }
 
   function stripFutureHourObjects() {
     if (!results) {
