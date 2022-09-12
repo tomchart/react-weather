@@ -9,17 +9,17 @@ import api from "../services/Api.jsx";
 import sprite from "../components/icons/sprite.svg";
 
 function WeatherResults() {
-  const [preFetch, setPreFetch] = useState(true);
   const { 
     searchInput,
     searchType,
     apiRoutes,
     setResults,
     results,
+    preFetch,
+    setPreFetch
   } = useContext(WeatherContext);
 
   const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
   const [error, setError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(null);
@@ -28,24 +28,24 @@ function WeatherResults() {
   const [precipChartVisible, setPrecipChartVisible] = useState(false);
   const [windChartVisible, setWindChartVisible] = useState(false);
 
-  function fetch(){
-    setIsLoading(true);
+  function fetch() {
     api.get(apiRoutes[searchType] + searchInput)
       .then(response => {
-        setData(response);
+        setData(() => response);
         console.log(response);
       })
   }
 
   function setDataFetchState() {
-    setPreFetch(false);
-    setIsLoading(false);
     if (data.status === 200 && typeof data.data == "object") {
       setIsSuccess(true);
       setResults(data.data);
       setIconName(data.data.currentConditions.iconName)
     } else {
       setIsSuccess(false);
+      // this isnt working
+      setIsError(true);
+      setError(data.data);
     };
   };
 
@@ -67,38 +67,37 @@ function WeatherResults() {
     setWindChartVisible(true);
   }
 
+  // if prefetch is true (as set by context) then set to false
+  // if prefetch is false (as updated by this hook) then call fetch
   useEffect(() => {
     if (preFetch) {
-      console.log('fetching');
+      setPreFetch(false);
+    }
+    if (!preFetch) {
       fetch();
     }
-  }, [])
+  }, [preFetch])
 
+  // if prefetch is false but we have data then call setDataFetchState 
   useEffect(() => {
-    if (preFetch && data) {
+    if (!preFetch && data) {
       setDataFetchState();
     }
-  }, [data]);
+  }, [data, preFetch]);
 
   return (
     <div>
       <div className="grid place-items-center mt-2 mb-2">
-        { preFetch && (
+        { !preFetch && !data && (
           <>
             <h3 className="mt-4">Fetching...</h3>
             <progress className="progress w-56 mt-2"></progress>
           </>
         )}
-        { isLoading && !preFetch && (
-          <>
-            <h3 className="mt-4">Loading...</h3>
-            <progress className="progress w-56 mt-2"></progress>
-          </>
-        )}
-        { isError && !preFetch && (
+        { isError && (
           <div>{error.message}</div>
         )}
-        { isSuccess && !preFetch && (
+        { isSuccess && (
           <>
             <div className="grid">
               <div className="grid grid-cols-4 grid-rows-1">
