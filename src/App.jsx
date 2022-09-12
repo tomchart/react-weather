@@ -12,6 +12,7 @@ function App() {
   const [weatherVisible, setWeatherVisible] = useState(false);
   const [results, setResults] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [preFetch, setPreFetch] = useState(true);
   const apiRoutes = {
     'today': '/api/weather/today/',
     'forecast': '/api/weather/forecast/',
@@ -43,6 +44,8 @@ function App() {
       futureHours,
       isLoggedIn,
       setIsLoggedIn,
+      preFetch,
+      setPreFetch,
     }}>
       <ProvideAuth>
         <div>
