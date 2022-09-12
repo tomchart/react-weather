@@ -115,7 +115,7 @@ function useProvideAuth() {
   }
 
   useEffect(() => {
-      setStateFromSession();
+    setStateFromSession();
   }, [user])
 
   // Return the user object and auth methods
