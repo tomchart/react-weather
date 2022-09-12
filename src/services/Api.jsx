@@ -7,14 +7,14 @@ const apiClient = axios.create({
 
 function get(url) {
   return apiClient.get('/sanctum/csrf-cookie')
-    .then((response) => {
+    .then(() => {
       return apiClient.get(url);
     })
 };
 
 function post(url, data) {
   return apiClient.get('/sanctum/csrf-cookie')
-    .then((response) => {
+    .then(() => {
       return apiClient.post(url, data);
     })
 };
