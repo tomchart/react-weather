@@ -37,7 +37,7 @@ function WeatherResults() {
   }
 
   function setDataFetchState() {
-    if (data.status === 200 && typeof data.data == "object") {
+    if (data.status === 200 && data.data.error == null) {
       setIsSuccess(true);
       setResults(data.data);
       setIconName(data.data.currentConditions.iconName)
@@ -45,7 +45,7 @@ function WeatherResults() {
       setIsSuccess(false);
       // this isnt working
       setIsError(true);
-      setError(data.data);
+      setError(data.data.error);
     };
   };
 
@@ -84,7 +84,7 @@ function WeatherResults() {
           </>
         )}
         { isError && (
-          <div>{error.message}</div>
+          <div className="mt-4">{error}</div>
         )}
         { isSuccess && (
           <>
