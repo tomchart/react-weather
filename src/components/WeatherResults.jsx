@@ -49,22 +49,11 @@ function WeatherResults() {
     };
   };
 
-  function handleTempButton() {
+  function handleChartButton(hook) {
     setPrecipChartVisible(false);
     setWindChartVisible(false);
-    setTempChartVisible(true);
-  }
-
-  function handlePrecipButton() {
     setTempChartVisible(false);
-    setWindChartVisible(false);
-    setPrecipChartVisible(true);
-  }
-
-  function handleWindButton() {
-    setTempChartVisible(false);
-    setPrecipChartVisible(false);
-    setWindChartVisible(true);
+    hook(true);
   }
 
   // if prefetch is true (as set by context) then set to false
@@ -139,19 +128,19 @@ function WeatherResults() {
             <div className="inline-flex mt-4">
               <button 
                 className={`btn btn-sm btn-warning mr-2 ${tempChartVisible ? "" : "btn-outline"}`}
-                onClick={handleTempButton}
+                onClick={() => handleChartButton(setTempChartVisible)}
               >
                 Temperature
               </button>
               <button 
                 className={`btn btn-sm btn-info mr-2 ${precipChartVisible ? "" : "btn-outline"}`}
-                onClick={handlePrecipButton}
+                onClick={() => handleChartButton(setPrecipChartVisible)}
               >
                 Precipitation
               </button>
               <button 
                 className={`btn btn-sm mr-2 ${windChartVisible ? "btn-outline bg-neutral-content text-black border-neutral-content" : "btn-outline"}`}
-                onClick={handleWindButton}
+                onClick={() => handleChartButton(setWindChartVisible)}
               >
                 Wind
               </button>
