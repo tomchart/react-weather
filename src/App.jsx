@@ -50,10 +50,9 @@ function App() {
       <ProvideAuth>
         <div>
           <Navbar />
-          <div className="mt-4">
+          <div>
             <Searchbox />
-            <div className="grid place-items-center mt-4">
-            </div>
+            <div className="grid place-items-center mt-4" />
           </div>
           {weatherVisible && <WeatherResults />}
         </div>
